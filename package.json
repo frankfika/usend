@@ -19,9 +19,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "lucide-react": "1.28.0",
-    "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "lucide-react": "1.46.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20260804.1",

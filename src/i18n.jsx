@@ -27,7 +27,7 @@ const DICT = {
 
     // ---- topbar ----
     "brand.eyebrow": "USEND",
-    "top.trust": "端到端加密",
+    "top.trust": "端到端加密 · 开源",
     "lang.label": "语言",
     "lang.switchTo": "切换到 English",
 
@@ -47,8 +47,12 @@ const DICT = {
     "star.footer": "开源无追踪 · Star 支持一下",
 
     // ---- footer ----
-    "footer.left": "端到端加密 · 阅后即焚 · 无需账号",
-    "footer.privacy": "临时传输，阅后即焚",
+    "footer.left": "开源可审计 · 临时传输 · 阅后即焚",
+    "footer.openSource": "开源项目",
+    "footer.privacy": "隐私说明",
+
+    "hero.trust.strip":
+      "不登录 · 不留公开链接 · 收完即删 · 开源可审计",
 
     // ---- trust strip ----
     "trust.encrypt.title": "本机先加密",
@@ -59,9 +63,10 @@ const DICT = {
     "trust.account.sub": "配对码只连接这次传输",
 
     // ---- hero ----
-    "hero.h1.send": "传到另一台设备",
+    "hero.h1.send": "不想开微信传文件时，用 8 位码就够了",
     "hero.h1.receive": "从另一台设备接收",
-    "hero.p.send": "不登录，不复制链接。选择内容后，用一次性配对码连接另一台设备。",
+    "hero.p.send":
+      "不登录、不留公开链接。选好内容，另一台扫码或输入配对码即可。",
     "hero.p.receive": "输入发送设备上显示的配对码，内容只在这台设备本地解密。",
 
     // ---- mode switch ----
@@ -113,6 +118,7 @@ const DICT = {
 
     // ---- primary button / send stages ----
     "btn.generate": "生成配对码",
+    "btn.pickContent": "先选文件或改传文字",
     "btn.passphraseShort": "密码还差 {n} 个字符",
     "stage.room": "正在生成配对码…",
     "stage.waiting": "等待接收方连接…",
@@ -122,9 +128,17 @@ const DICT = {
     "err.transfer": "传输未完成，请重新开始。",
 
     // ---- how section ----
-    "how.link": "了解安全机制",
+    "how.link": "内容在你的设备上加密，服务器解不开",
     "how.kicker": "HOW IT WORKS",
     "how.title": "内容只在两台设备之间解密。",
+
+    "steps.kicker": "三步怎么用",
+    "steps.1.title": "这台选内容",
+    "steps.1.body": "选文件或粘贴文字，按需调整保留时间和传输设置。",
+    "steps.2.title": "另一台扫码/输码",
+    "steps.2.body": "打开 usend.xyz，扫描 QR 或输入 8 位配对码连接。",
+    "steps.3.title": "收完自动销毁",
+    "steps.3.body": "接收成功后临时数据立即删除；无人接收则按时过期。",
     "how.1.title": "一次性连接",
     "how.1.body": "配对码只用于这一次传输。",
     "how.2.title": "端到端加密",
@@ -134,23 +148,28 @@ const DICT = {
 
     // ---- discovery content ----
     "discover.kicker": "WHY USEND",
-    "discover.title": "不想登录、不想建群时，\nUSend 刚刚好。",
-    "discover.intro": "把文件或一段文字临时送到另一台设备。没有账号、没有公开链接，传输结束后临时数据会被清除。",
-    "discover.card1.title": "手机传到电脑",
-    "discover.card1.body": "打开 USend，在手机上选择文件，在电脑输入一次性配对码即可接收。",
-    "discover.card2.title": "临时发送文件",
-    "discover.card2.body": "发送合同、截图、附件或压缩包，不必上传到网盘，也不必给对方开长期权限。",
+    "discover.title": "给自己传，不必绕一圈聊天软件",
+    "discover.intro":
+      "文件、截图、验证码、临时备注：配对一次，传完即焚，不占网盘、不建群。",
+    "discover.card1.title": "手机 → 电脑",
+    "discover.card1.body": "手机生成码，电脑扫码收。",
+    "discover.card2.title": "临时甩文件",
+    "discover.card2.body": "合同、截图、压缩包，收完自动删。",
     "discover.card3.title": "传文字和链接",
-    "discover.card3.body": "把地址、验证码以外的临时文字从一台设备带到另一台设备，复制即可。",
+    "discover.card3.body": "地址、验证码、一段草稿，对端一键复制。",
     "discover.faq.title": "常见问题",
     "discover.faq1.q": "USend 需要注册账号吗？",
-    "discover.faq1.a": "不需要。发送方和接收方都不需要注册或登录，使用一次性 8 位配对码连接。",
+    "discover.faq1.a":
+      "不需要。两边都打开网页，用一次性配对码连接。",
     "discover.faq2.q": "USend 安全吗？",
-    "discover.faq2.a": "内容会在发送设备本地先加密，真正的加密密钥由两台设备临时协商，服务器无法解密内容。",
+    "discover.faq2.a":
+      "内容先在发送端加密。密钥由两台设备协商，服务器看不到明文。",
     "discover.faq3.q": "文件会保存多久？",
-    "discover.faq3.a": "传输完成后临时数据会删除；如果没有接收，默认最长保留 5 分钟，最多 10 分钟。",
+    "discover.faq3.a":
+      "收到即删；没人接收时默认 5 分钟过期，最长 10 分钟。",
     "discover.faq4.q": "USend 支持哪些文件？",
-    "discover.faq4.a": "支持常见文件和文字内容，单个文件最大 20 MB。",
+    "discover.faq4.a":
+      "常见文件和文字；单文件目前最大 20 MB（加密中转上限）。",
     "discover.openSource": "查看开源项目与安全说明",
 
     // ---- receive entry ----
@@ -190,9 +209,14 @@ const DICT = {
 
     // ---- ready page ----
     "ready.eyebrow.waiting": "等待接收方连接",
-    "ready.h1.waiting": "在另一台设备输入\n这组配对码",
+    "ready.h1.waiting": "在另一台设备打开 usend.xyz",
     "ready.h1.ended": "这次传输\n已经安全结束。",
+    "ready.pair.sub": "扫右侧二维码，或手动输入左侧 8 位码",
     "ready.pair.hint": "配对码仅本次有效",
+    "ready.qr.hint": "用另一台设备扫",
+    "ready.copy": "复制配对码",
+    "ready.copied": "已复制",
+    "ready.crypto.note": "默认核对安全码 · 服务端解不开内容",
     "ready.badge.confirm": "需核对安全码",
     "ready.badge.auto": "连接后自动发送",
     "ready.badge.network": "仅限同一网络",
@@ -226,7 +250,7 @@ const DICT = {
 
     // ---- topbar ----
     "brand.eyebrow": "USEND",
-    "top.trust": "End-to-end encrypted",
+    "top.trust": "End-to-end encrypted · Open source",
     "lang.label": "Language",
     "lang.switchTo": "Switch to 中文",
 
@@ -246,8 +270,12 @@ const DICT = {
     "star.footer": "Open-source, no tracking · Star to support",
 
     // ---- footer ----
-    "footer.left": "End-to-end encrypted · Auto-deleted · No account needed",
-    "footer.privacy": "Temporary and deleted after receipt",
+    "footer.left": "Open source · Temporary transfer · Auto-deleted",
+    "footer.openSource": "Open source",
+    "footer.privacy": "Privacy",
+
+    "hero.trust.strip":
+      "No account · No lasting link · Auto-delete · Open source",
 
     // ---- trust strip ----
     "trust.encrypt.title": "Encrypted on device first",
@@ -258,9 +286,10 @@ const DICT = {
     "trust.account.sub": "Pairing code links only this transfer",
 
     // ---- hero ----
-    "hero.h1.send": "Send to another device",
+    "hero.h1.send": "Skip the chat app. Move a file with an 8-digit code.",
     "hero.h1.receive": "Receive from another device",
-    "hero.p.send": "No sign-in, no copied links. Pick your content, connect with a one-time pairing code.",
+    "hero.p.send":
+      "No sign-in. No public link. Pick content, then scan or enter the code on the other device.",
     "hero.p.receive": "Enter the pairing code shown on the sending device. Content is decrypted only on this device.",
 
     // ---- mode switch ----
@@ -312,6 +341,7 @@ const DICT = {
 
     // ---- primary button / send stages ----
     "btn.generate": "Create pairing code",
+    "btn.pickContent": "Choose a file or switch to text",
     "btn.passphraseShort": "Password needs {n} more characters",
     "stage.room": "Creating pairing code…",
     "stage.waiting": "Waiting for receiver…",
@@ -321,9 +351,17 @@ const DICT = {
     "err.transfer": "Transfer failed. Please start again.",
 
     // ---- how section ----
-    "how.link": "How security works",
+    "how.link": "Encrypted on your device — the server can't read it",
     "how.kicker": "HOW IT WORKS",
     "how.title": "Content is decrypted only on your devices.",
+
+    "steps.kicker": "Three steps",
+    "steps.1.title": "Pick content here",
+    "steps.1.body": "Choose a file or paste text, then set expiry and transfer options.",
+    "steps.2.title": "Scan or enter on the other device",
+    "steps.2.body": "Open usend.xyz, scan the QR code, or type the 8-digit pairing code.",
+    "steps.3.title": "Auto-delete when done",
+    "steps.3.body": "Data is removed right after receipt, or when the timer runs out.",
     "how.1.title": "One-time connection",
     "how.1.body": "The pairing code works for this transfer only.",
     "how.2.title": "End-to-end encryption",
@@ -333,23 +371,28 @@ const DICT = {
 
     // ---- discovery content ----
     "discover.kicker": "WHY USEND",
-    "discover.title": "No sign-in, no shared folder.\nJust a quick transfer.",
-    "discover.intro": "Send a file or a piece of text to another device without creating an account or leaving a permanent public link.",
-    "discover.card1.title": "Phone to computer",
-    "discover.card1.body": "Choose a file on your phone, then enter the one-time pairing code on your computer to receive it.",
-    "discover.card2.title": "Temporary file sharing",
-    "discover.card2.body": "Send a contract, screenshot, attachment, or archive without uploading it to a shared drive or granting lasting access.",
-    "discover.card3.title": "Move text and links",
-    "discover.card3.body": "Move an address or a temporary note between devices, then copy it where you need it.",
+    "discover.title": "Send it to yourself—without the messaging detour.",
+    "discover.intro":
+      "Files, screenshots, codes, and quick notes: pair once, burn after transfer—no cloud drive, no group chat.",
+    "discover.card1.title": "Phone → computer",
+    "discover.card1.body": "Create the code on your phone; scan on your computer to receive.",
+    "discover.card2.title": "Drop a file temporarily",
+    "discover.card2.body": "Contracts, screenshots, or archives—gone after download.",
+    "discover.card3.title": "Text and links",
+    "discover.card3.body": "Addresses, verification codes, or a draft—copy on the other side.",
     "discover.faq.title": "Frequently asked questions",
     "discover.faq1.q": "Do I need an account?",
-    "discover.faq1.a": "No. Neither device needs an account. They connect with a one-time 8-digit pairing code.",
+    "discover.faq1.a":
+      "No. Open the site on both devices and connect with a one-time pairing code.",
     "discover.faq2.q": "Is USend secure?",
-    "discover.faq2.a": "Content is encrypted on the sending device first. The two devices negotiate the real encryption key, so the server cannot decrypt the content.",
+    "discover.faq2.a":
+      "Content is encrypted on the sender first. Keys are negotiated between the two devices—the server never sees plaintext.",
     "discover.faq3.q": "How long is a file kept?",
-    "discover.faq3.a": "Temporary data is deleted after receipt. If nobody receives it, it expires after 5 minutes by default and at most 10 minutes.",
+    "discover.faq3.a":
+      "Deleted on receipt. If nobody connects, it expires after 5 minutes by default (10 minutes max).",
     "discover.faq4.q": "What can I send?",
-    "discover.faq4.a": "You can send common files and text. Each file can be up to 20 MB.",
+    "discover.faq4.a":
+      "Common files and text. Each file can be up to 20 MB (encrypted relay limit).",
     "discover.openSource": "View the open-source project and security notes",
 
     // ---- receive entry ----
@@ -389,9 +432,14 @@ const DICT = {
 
     // ---- ready page ----
     "ready.eyebrow.waiting": "Waiting for receiver",
-    "ready.h1.waiting": "Enter this pairing code\non the other device",
+    "ready.h1.waiting": "Open usend.xyz on the other device",
     "ready.h1.ended": "This transfer\nhas safely ended.",
+    "ready.pair.sub": "Scan the QR code, or enter the 8-digit code on the left",
     "ready.pair.hint": "Valid for this transfer only",
+    "ready.qr.hint": "Scan with your other device",
+    "ready.copy": "Copy code",
+    "ready.copied": "Copied",
+    "ready.crypto.note": "Security code check by default · Server can't decrypt content",
     "ready.badge.confirm": "Security code required",
     "ready.badge.auto": "Send automatically after connection",
     "ready.badge.network": "Same network only",

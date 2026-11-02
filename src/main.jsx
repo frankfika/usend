@@ -1,8 +1,9 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { Fragment, useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
   ArrowUpRight,
   Check,
+  Copy,
   CheckCircle2,
   ChevronDown,
   Download,
@@ -11,7 +12,6 @@ import {
   Info,
   KeyRound,
   LockKeyhole,
-  QrCode,
   RotateCcw,
   ShieldCheck,
   Star,
@@ -59,6 +59,23 @@ const apiBinary = async (path, options = {}) => {
 };
 
 const REPO_URL = "https://github.com/frankfika/usend";
+const PRIVACY_URL = `${REPO_URL}/blob/main/PRIVACY.md`;
+
+/** Deep link to prefill receive mode. Documented in README. */
+function parseReceiveDeepLink() {
+  if (typeof window === "undefined") return "";
+  const hash = window.location.hash.replace(/^#/, "");
+  const hashMatch = hash.match(/^receive=(\d{8})$/);
+  if (hashMatch) return hashMatch[1];
+  const queryCode = new URLSearchParams(window.location.search).get("receive");
+  if (queryCode && /^\d{8}$/.test(queryCode)) return queryCode;
+  return "";
+}
+
+function buildReceiveDeepLink(code) {
+  const base = `${window.location.origin}${window.location.pathname}`;
+  return `${base}#receive=${code}`;
+}
 
 function App() {
   return (
@@ -137,7 +154,6 @@ function GitHubStarButton() {
       title={hasStars ? t("star.title.hasStars", { count: starLabel }) : t("star.title.firstStar")}
     >
       <GithubIcon size={15} />
-      <Star size={14} className="gh-star-pulse" />
       <span>{hasStars ? t("star.btn.hasStars") : t("star.btn.firstStar")}</span>
       {hasStars && (
         <span className="gh-star-count" data-stars={starLabel}>
@@ -190,7 +206,18 @@ function Shell({ children }) {
       </header>
       {children}
       <footer className="footer">
-        <span className="footer-link"><ShieldCheck size={13} /> {t("footer.left")}</span>
+        <span className="footer-link">
+          <ShieldCheck size={13} /> {t("footer.left")}
+        </span>
+        <span className="footer-links">
+          <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
+            {t("footer.openSource")}
+          </a>
+          <span className="footer-sep">·</span>
+          <a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">
+            {t("footer.privacy")}
+          </a>
+        </span>
       </footer>
     </div>
   );
@@ -213,7 +240,8 @@ function Multiline({ text, as: Tag = "span" }) {
 
 function UnifiedHome() {
   const { t } = useLang();
-  const [mode, setMode] = useState("send");
+  const deepLinkCode = useMemo(() => parseReceiveDeepLink(), []);
+  const [mode, setMode] = useState(deepLinkCode ? "receive" : "send");
   const [kind, setKind] = useState("file");
   const [file, setFile] = useState(null);
   const [text, setText] = useState("");
@@ -349,9 +377,6 @@ function UnifiedHome() {
     <Shell>
       <main className="main home-main">
         <section className="hero">
-          <span className="hero-kicker">
-            <span className="status-dot" /> {t("top.trust")}
-          </span>
           <h1>
             {mode === "send" ? t("hero.h1.send") : t("hero.h1.receive")}
           </h1>
@@ -359,6 +384,9 @@ function UnifiedHome() {
             {mode === "send" ? t("hero.p.send") : t("hero.p.receive")}
           </p>
         </section>
+        <p className="trust-strip" role="note">
+          {t("hero.trust.strip")}
+        </p>
         <div className="mode-switch home-mode">
           <button
             className={mode === "send" ? "active" : ""}
@@ -552,7 +580,7 @@ function UnifiedHome() {
               )}
             </div>
             <button
-              className="primary-btn"
+              className={`primary-btn${!canSend && !busy ? " is-idle" : ""}`}
               disabled={!canSend || busy}
               onClick={createTransfer}
             >
@@ -573,8 +601,10 @@ function UnifiedHome() {
                 <>
                   {usePassphrase && passphraseMissingCharacters > 0
                     ? t("btn.passphraseShort", { n: passphraseMissingCharacters })
-                    : t("btn.generate")}
-                  <ArrowUpRight size={17} />
+                    : !canSend
+                      ? t("btn.pickContent")
+                      : t("btn.generate")}
+                  {canSend && <ArrowUpRight size={17} />}
                 </>
               )}
             </button>
@@ -586,7 +616,7 @@ function UnifiedHome() {
             )}
           </section>
         ) : (
-          <ReceiveEntry />
+          <ReceiveEntry initialCode={deepLinkCode} />
         )}
         <button
           className="how-toggle"
@@ -638,9 +668,30 @@ function UnifiedHome() {
             />
           </div>
         </section>
+        <UsageSteps />
         <DiscoveryContent />
       </main>
     </Shell>
+  );
+}
+
+function UsageSteps() {
+  const { t } = useLang();
+  const steps = [1, 2, 3];
+  return (
+    <section className="usage-steps" aria-labelledby="usage-steps-title">
+      <span className="section-kicker" id="usage-steps-title">
+        {t("steps.kicker")}
+      </span>
+      <ol className="usage-steps-list">
+        {steps.map((n) => (
+          <li key={n}>
+            <strong>{t(`steps.${n}.title`)}</strong>
+            <span>{t(`steps.${n}.body`)}</span>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
@@ -698,9 +749,9 @@ function HowStep({ n, icon, title, body }) {
   );
 }
 
-function ReceiveEntry() {
+function ReceiveEntry({ initialCode = "" }) {
   const { t } = useLang();
-  const [code, setCode] = useState("");
+  const [code, setCode] = useState(initialCode);
   const [passphrase, setPassphrase] = useState("");
   const [passphraseRequired, setPassphraseRequired] = useState(false);
   const [roomPreview, setRoomPreview] = useState(null);
@@ -710,6 +761,13 @@ function ReceiveEntry() {
   const [payload, setPayload] = useState(null);
   const [deletionConfirmed, setDeletionConfirmed] = useState(false);
   const codeRemaining = Math.max(0, 8 - code.length);
+  useEffect(() => {
+    if (code.length !== 8) return;
+    const hash = `#receive=${code}`;
+    if (window.location.hash !== hash) {
+      window.history.replaceState(null, "", `${window.location.pathname}${hash}`);
+    }
+  }, [code]);
   const join = async () => {
     if (!/^\d{8}$/.test(code)) return setError(t("recv.err.code"));
     setState("joining");
@@ -937,6 +995,73 @@ function ReceiveEntry() {
   );
 }
 
+function PairingQr({ code }) {
+  const { t } = useLang();
+  const [dataUrl, setDataUrl] = useState("");
+  const receiveUrl = useMemo(() => buildReceiveDeepLink(code), [code]);
+  useEffect(() => {
+    let cancelled = false;
+    import("qrcode")
+      .then((QR) =>
+        QR.toDataURL(receiveUrl, {
+          width: 168,
+          margin: 1,
+          errorCorrectionLevel: "M",
+          color: { dark: "#1a1f36", light: "#ffffff" },
+        }),
+      )
+      .then((url) => {
+        if (!cancelled) setDataUrl(url);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [receiveUrl]);
+  return (
+    <div className="pairing-qr-col">
+      {dataUrl ? (
+        <img
+          className="pairing-qr"
+          src={dataUrl}
+          width={168}
+          height={168}
+          alt={t("ready.qr.hint")}
+        />
+      ) : (
+        <div className="pairing-qr pairing-qr-skeleton" aria-hidden="true" />
+      )}
+      <p className="pair-qr-hint">{t("ready.qr.hint")}</p>
+    </div>
+  );
+}
+
+function PairingDisplay({ code }) {
+  const { t } = useLang();
+  const [copied, setCopied] = useState(false);
+  const copyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
+  return (
+    <div className="pairing-grid">
+      <div className="pairing-code-col">
+        <div className="pair-code">
+          {code.slice(0, 4)} <span>{code.slice(4)}</span>
+        </div>
+        <button type="button" className="copy-code-btn" onClick={copyCode}>
+          {copied ? <Check size={14} /> : <Copy size={14} />}
+          {copied ? t("ready.copied") : t("ready.copy")}
+        </button>
+      </div>
+      <PairingQr code={code} />
+    </div>
+  );
+}
+
 function ReadyPage({ result, onReset, onVerify, stage }) {
   const { t } = useLang();
   const [endReason, setEndReason] = useState(null);
@@ -1003,13 +1128,6 @@ function ReadyPage({ result, onReset, onVerify, stage }) {
   return (
     <Shell>
       <main className="main ready-main">
-        <div className="ready-orbit">
-          <span className="orbit-ring ring-one" />
-          <span className="orbit-ring ring-two" />
-          <div className="safe-box">
-            <Check size={30} />
-          </div>
-        </div>
         <div className="ready-eyebrow">
           <span className="live-dot" />
           {ended ? ` ${endCopy.eyebrow}` : ` ${t("ready.eyebrow.waiting")}`}
@@ -1018,9 +1136,10 @@ function ReadyPage({ result, onReset, onVerify, stage }) {
           {ended ? (
             <Multiline text={t("ready.h1.ended")} />
           ) : (
-            <Multiline text={t("ready.h1.waiting")} />
+            t("ready.h1.waiting")
           )}
         </h1>
+        {!ended && <p className="ready-lead">{t("ready.pair.sub")}</p>}
         <p className="ready-sub">
           {result.name} · {fmt(result.size)}
         </p>
@@ -1032,9 +1151,7 @@ function ReadyPage({ result, onReset, onVerify, stage }) {
             </div>
           ) : (
             <>
-              <div className="pair-code">
-                {result.code.slice(0, 4)} <span>{result.code.slice(4)}</span>
-              </div>
+              <PairingDisplay code={result.code} />
               <p className="pair-hint">{t("ready.pair.hint")}</p>
               <div className="restriction-badges">
                 <span>
@@ -1099,7 +1216,7 @@ function ReadyPage({ result, onReset, onVerify, stage }) {
             </>
           ) : (
             <>
-              <QrCode size={15} /> {t("ready.note.waiting")}
+              <ShieldCheck size={15} /> {t("ready.crypto.note")}
             </>
           )}
         </div>
@@ -1110,7 +1227,7 @@ function ReadyPage({ result, onReset, onVerify, stage }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <Star size={14} className="hero-star-pulse" />
+            <Star size={14} />
             <span>{t("star.ended.cta")}</span>
             <ArrowUpRight size={13} />
           </a>

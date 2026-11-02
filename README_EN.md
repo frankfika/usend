@@ -71,6 +71,13 @@ Open [usend.xyz](https://usend.xyz/):
 3. Check both security codes by default, or let the transfer start automatically if the sender disabled the check.
 4. Temporary server-side data is destroyed after successful receipt.
 
+**Receive deep link (QR / share):** After the sender creates a pairing code, the QR and copyable URL use:
+
+- Preferred: `https://usend.xyz/#receive=12345678` (8 digits, no spaces)
+- Also supported: `https://usend.xyz/?receive=12345678`
+
+The app opens in Receive mode with the code prefilled.
+
 ### Run locally
 
 Node.js 20 or later is required.

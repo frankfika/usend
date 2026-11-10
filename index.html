@@ -2,16 +2,28 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f5f7fb" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f7f5f0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="USend" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="application-name" content="USend" />
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="MobileOptimized" content="320" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="canonical" href="https://usend.xyz/" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta
       name="description"
       content="USend is a secure file and text transfer tool with no sign-up. Connect your phone and computer with a one-time pairing code, end-to-end encryption, and automatic cleanup."
     />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-    <link rel="canonical" href="https://usend.xyz/" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="USend" />
     <meta property="og:title" content="USend · Secure device-to-device transfers" />
@@ -21,7 +33,7 @@
     />
     <meta property="og:url" content="https://usend.xyz/" />
     <meta property="og:image" content="https://usend.xyz/icon-512.png" />
-    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="USend · Secure device-to-device transfers" />
     <meta
       name="twitter:description"
@@ -37,15 +49,33 @@
         "url": "https://usend.xyz/",
         "description": "A secure, end-to-end encrypted file and text transfer tool with no sign-up.",
         "applicationCategory": "UtilitiesApplication",
-        "operatingSystem": "Web",
+        "operatingSystem": "Any",
+        "browserRequirements": "Requires modern browser with Web Crypto API",
         "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
         "featureList": [
           "No account needed",
-          "End-to-end encryption",
-          "One-time pairing code",
-          "Automatic cleanup after transfer"
+          "End-to-end encryption (ECDH P-256 + AES-256-GCM)",
+          "One-time 8-digit pairing code",
+          "Automatic cleanup after transfer",
+          "No tracking, no analytics"
+        ],
+        "screenshot": [
+          "https://usend.xyz/docs/assets/home_en.png",
+          "https://usend.xyz/docs/assets/features_en.png"
         ]
       }
+    </script>
+    <script>
+      // Force HTTPS if the page is ever loaded over plain HTTP.
+      // The Worker already redirects, but this guards the brief window
+      // where a stale DNS / proxy might still serve a HTTP page directly.
+      (function () {
+        try {
+          if (location.protocol !== "https:" && location.hostname !== "localhost" && location.hostname !== "127.0.0.1") {
+            location.replace("https://" + location.host + location.pathname + location.search + location.hash);
+          }
+        } catch (_) {}
+      })();
     </script>
   </head>
   <body>

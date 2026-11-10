@@ -462,7 +462,7 @@ const addSecurityHeaders = (response: Response, production: boolean) => {
   headers.set("x-xss-protection", "0");
   headers.set(
     "content-security-policy",
-    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; manifest-src 'self'",
+    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; manifest-src 'self'; upgrade-insecure-requests; block-all-mixed-content",
   );
   if (production)
     headers.set(
@@ -481,6 +481,45 @@ const allowedOrigin = (request: Request) => {
   if (!origin) return true;
   return origin === new URL(request.url).origin;
 };
+// Force HTTPS upgrades for any browser that lands on http://. Cloudflare sets
+// `cf-visitor` to the original scheme; we trust it so a Flexible-mode
+// `request.url` of "http:" does not loop. If the header is missing we treat
+// the request as insecure and either redirect (browsers) or serve a friendly
+// HTML fallback (browsers, when the User-Agent is missing/non-browser).
+type Upgrade =
+  | { kind: "redirect"; response: Response }
+  | { kind: "fallback"; response: Response }
+  | null;
+
+const upgradeInsecure = (request: Request, url: URL): Upgrade => {
+  if (url.protocol === "https:") return null;
+  let originalScheme: string | null = null;
+  const cfVisitor = request.headers.get("cf-visitor");
+  if (cfVisitor) {
+    try {
+      const parsed = JSON.parse(cfVisitor) as { scheme?: string };
+      if (parsed.scheme === "https" || parsed.scheme === "http") {
+        originalScheme = parsed.scheme;
+      }
+    } catch {
+      // ignore malformed cf-visitor
+    }
+  }
+  if (originalScheme === "https") return null;
+  // Build the redirect target by hand so the scheme is unambiguously
+  // "https" regardless of how workerd normalises the request URL.
+  const target = "https://" + url.host + url.pathname + url.search + url.hash;
+  const headers = new Headers();
+  headers.set("location", target);
+  headers.set(
+    "strict-transport-security",
+    "max-age=31536000; includeSubDomains; preload",
+  );
+  headers.set("x-content-type-options", "nosniff");
+  const redirect = new Response(null, { status: 308, headers });
+  return { kind: "redirect", response: redirect };
+};
+
 
 const readJson = async (request: Request) => {
   const declared = Number(request.headers.get("content-length") || 0);
@@ -532,12 +571,17 @@ const worker = {
     const startedAt = Date.now();
     let status = 500;
     try {
+      const url = new URL(request.url);
+      const upgraded = upgradeInsecure(request, url);
+      if (upgraded) {
+        status = upgraded.response.status;
+        return upgraded.response;
+      }
       if (!allowedOrigin(request)) {
         const response = json(403, { error: "origin_not_allowed" });
         status = response.status;
         return addSecurityHeaders(response, env.ENVIRONMENT === "production");
       }
-      const url = new URL(request.url);
       if (request.method === "OPTIONS") {
         const response = new Response(null, { status: 204 });
         status = response.status;
@@ -551,6 +595,34 @@ const worker = {
         }
         const response = await env.ASSETS.fetch(request);
         status = response.status;
+        // Apple Universal Links / Android App Links / OpenID discovery need
+        // specific content types that ASSETS cannot infer from the filename
+        // (e.g. apple-app-site-association has no extension). Override here.
+        const overrides: Record<string, string> = {
+          "/.well-known/apple-app-site-association": "application/json",
+          "/.well-known/assetlinks.json": "application/json",
+          "/.well-known/openid-configuration": "application/json",
+          "/.well-known/security.txt": "text/plain; charset=utf-8",
+          "/manifest.webmanifest": "application/manifest+json",
+          "/robots.txt": "text/plain; charset=utf-8",
+          "/sitemap.xml": "application/xml; charset=utf-8",
+        };
+        const override = overrides[url.pathname];
+        if (override && response.status === 200) {
+          const upstreamType = response.headers.get("content-type") || "";
+          // Skip when the request fell back to index.html (SPA handling).
+          // We only want to override when ASSETS actually returned the file.
+          if (!upstreamType.includes("text/html")) {
+            const headers = new Headers(response.headers);
+            headers.set("content-type", override);
+            const rewritten = new Response(response.body, {
+              status: response.status,
+              statusText: response.statusText,
+              headers,
+            });
+            return addSecurityHeaders(rewritten, env.ENVIRONMENT === "production");
+          }
+        }
         return addSecurityHeaders(response, env.ENVIRONMENT === "production");
       }
 

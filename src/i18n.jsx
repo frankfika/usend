@@ -1,17 +1,18 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { readItem, writeItem } from "./lib/storage.js";
 
 // ============================================================
 // USend — minimal i18n (zh / en)
 // ============================================================
 
 export const LANGS = ["zh", "en"];
-const STORAGE_KEY = "instantflow:lang";
+const STORAGE_KEY = "lang";
 
 // 推断初始语言：用户主动选择的语言 > 默认 en
 export function detectLang() {
   if (typeof window === "undefined") return "en";
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    const saved = readItem(STORAGE_KEY);
     if (saved === "zh" || saved === "en") return saved;
   } catch {}
   return "en";
@@ -24,43 +25,36 @@ const DICT = {
     "doc.title": "USend · 安全传到另一台设备",
     "doc.description": "USend 是一款无需注册的安全文件与文字传输工具。手机、电脑之间用一次性配对码传输，端到端加密，最长 10 分钟后自动清除。",
     "doc.lang": "zh-CN",
+    "insecure.banner": "你正在用 http:// 打开 USend，端到端加密需要 https://。",
+    "insecure.switch": "切换到 https",
 
     // ---- topbar ----
     "brand.eyebrow": "USEND",
     "top.trust": "端到端加密",
-    "lang.label": "语言",
     "lang.switchTo": "切换到 English",
 
     // ---- github star ----
     "star.btn.hasStars": "Star",
     "star.btn.firstStar": "成为首个 Star",
+    "star.btn.star": "Star",
     "star.aria.hasStars": "在 GitHub 上给项目点 Star，当前 {count} 颗星",
     "star.aria.firstStar": "在 GitHub 上成为首个给项目点 Star 的人",
+    "star.aria.star": "在 GitHub 上给项目点 Star",
     "star.title.hasStars": "当前 {count} 颗星",
     "star.title.firstStar": "成为第一个 Star",
-    "star.hero.title.hasStars": "觉得好用？给个 Star 支持一下",
-    "star.hero.title.firstStar": "成为第一个 Star 支持者",
-    "star.hero.sub.hasStars": "已有 {count} 颗星 · 完全开源，无追踪",
-    "star.hero.sub.firstStar": "完全开源，无追踪，无账号 · 等你点亮第一颗星",
-    "star.hero.cta": "去点 Star",
     "star.ended.cta": "顺手给个 Star，让 USend 被更多人看到",
-    "star.footer": "开源无追踪 · Star 支持一下",
 
     // ---- footer ----
     "footer.left": "端到端加密 · 阅后即焚 · 无需账号",
-    "footer.privacy": "临时传输，阅后即焚",
 
     // ---- trust strip ----
-    "trust.encrypt.title": "本机先加密",
-    "trust.encrypt.sub": "文件离开设备前已密封",
-    "trust.ttl.title": "短时存在",
-    "trust.ttl.sub": "最长 10 分钟后自动删除",
-    "trust.account.title": "无需账号",
-    "trust.account.sub": "配对码只连接这次传输",
 
     // ---- hero ----
-    "hero.h1.send": "传到另一台设备",
-    "hero.h1.receive": "从另一台设备接收",
+    "hero.h1.send": "传到|另一台设备",
+    "hero.h1.receive": "接收来自|另一台设备",
+    "hero.trust.encrypt": "浏览器端加密",
+    "hero.trust.account": "无需注册",
+    "hero.trust.burn": "阅后即焚",
     "hero.p.send": "不登录，不复制链接。选择内容后，用一次性配对码连接另一台设备。",
     "hero.p.receive": "输入发送设备上显示的配对码，内容只在这台设备本地解密。",
 
@@ -74,7 +68,7 @@ const DICT = {
 
     // ---- dropzone ----
     "drop.empty.title": "选择文件",
-    "drop.empty.meta": "也可以拖到这里 · 最大 20 MB",
+    "drop.empty.meta": "拖到这里 · 点击选择 · 或直接粘贴 · 最大 20 MB",
     "drop.filled.meta": "{size} · 准备就绪",
     "drop.change": "更换文件",
     "drop.tooLarge": "文件不能超过 20 MB",
@@ -89,11 +83,9 @@ const DICT = {
     "opt.after1": "1 分钟",
     "opt.after5": "5 分钟",
     "opt.after10": "10 分钟",
-    "opt.note": "两台设备临时协商密钥",
 
     // ---- security options ----
     "sec.heading": "传输设置",
-    "sec.optional": "可选",
     "sec.summary.confirm": "需核对安全码",
     "sec.summary.auto": "自动发送",
     "sec.summary.internet": "不限网络",
@@ -120,6 +112,11 @@ const DICT = {
     "stage.encrypt": "正在本机加密…",
     "stage.upload": "正在发送加密内容…",
     "err.transfer": "传输未完成，请重新开始。",
+    "err.timeout": "请求超时，网络太慢或连接中断了。请重试。",
+    "err.network": "连不上服务器，请检查网络后重试。",
+    "err.rate": "操作太频繁，请稍等一会儿再试。",
+    "err.expired": "这个配对码不存在或已经过期。",
+    "err.cancelled": "传输已取消。",
 
     // ---- how section ----
     "how.link": "了解安全机制",
@@ -154,9 +151,7 @@ const DICT = {
     "discover.openSource": "查看开源项目与安全说明",
 
     // ---- receive entry ----
-    "recv.eyebrow": "输入配对码",
     "recv.h2": "输入 8 位配对码",
-    "recv.p": "配对码只在这次传输中有效，不需要链接或账号。",
     "recv.code.placeholder": "0000 0000",
     "recv.code.hint.empty": "输入发送方显示的 8 位数字",
     "recv.code.hint.remaining": "还差 {n} 位",
@@ -170,9 +165,7 @@ const DICT = {
     "recv.btn.withPassphrase": "连接并接收",
     "recv.verify.label": "安全码",
     "recv.verify.hint": "请确认发送方显示相同的安全码。",
-    "recv.warn": "配对成功后，真正的加密钥匙只在两台设备之间生成。",
     "recv.err.code": "请输入 8 位配对码",
-    "recv.err.needPassphrase": "请输入发送方设置的接收密码",
     "recv.err.rate": "尝试次数过多，请稍后再试。",
     "recv.err.notfound": "这个配对码不存在或已经过期。",
     "recv.err.paired": "这次传输已经与另一台设备配对。",
@@ -192,7 +185,9 @@ const DICT = {
     "ready.eyebrow.waiting": "等待接收方连接",
     "ready.h1.waiting": "在另一台设备输入\n这组配对码",
     "ready.h1.ended": "这次传输\n已经安全结束。",
-    "ready.pair.hint": "配对码仅本次有效",
+    "ready.pair.hint": "配对码仅本次有效 · 点击复制",
+    "ready.pair.copy": "复制配对码",
+    "ready.pair.copied": "已复制",
     "ready.badge.confirm": "需核对安全码",
     "ready.badge.auto": "连接后自动发送",
     "ready.badge.network": "仅限同一网络",
@@ -223,43 +218,36 @@ const DICT = {
     "doc.title": "USend · Secure device-to-device transfers",
     "doc.description": "USend is a secure file and text transfer tool with no sign-up. Use a one-time pairing code between your phone and computer, with end-to-end encryption and automatic cleanup.",
     "doc.lang": "en",
+    "insecure.banner": "You opened USend over http://. End-to-end encryption requires https://.",
+    "insecure.switch": "Switch to https",
 
     // ---- topbar ----
     "brand.eyebrow": "USEND",
     "top.trust": "End-to-end encrypted",
-    "lang.label": "Language",
     "lang.switchTo": "Switch to 中文",
 
     // ---- github star ----
     "star.btn.hasStars": "Star",
     "star.btn.firstStar": "Be the first Star",
+    "star.btn.star": "Star",
     "star.aria.hasStars": "Star this project on GitHub — currently {count} stars",
     "star.aria.firstStar": "Be the first to star this project on GitHub",
+    "star.aria.star": "Star this project on GitHub",
     "star.title.hasStars": "{count} stars so far",
     "star.title.firstStar": "Be the first Star",
-    "star.hero.title.hasStars": "Finding it useful? Leave a Star",
-    "star.hero.title.firstStar": "Be the first to star this project",
-    "star.hero.sub.hasStars": "{count} stars · fully open-source, no tracking",
-    "star.hero.sub.firstStar": "Fully open-source, no tracking, no accounts · waiting for its first star",
-    "star.hero.cta": "Star it",
     "star.ended.cta": "Drop a Star so more people can find USend",
-    "star.footer": "Open-source, no tracking · Star to support",
 
     // ---- footer ----
     "footer.left": "End-to-end encrypted · Auto-deleted · No account needed",
-    "footer.privacy": "Temporary and deleted after receipt",
 
     // ---- trust strip ----
-    "trust.encrypt.title": "Encrypted on device first",
-    "trust.encrypt.sub": "Sealed before it ever leaves",
-    "trust.ttl.title": "Short-lived",
-    "trust.ttl.sub": "Auto-deleted after at most 10 minutes",
-    "trust.account.title": "No account needed",
-    "trust.account.sub": "Pairing code links only this transfer",
 
     // ---- hero ----
-    "hero.h1.send": "Send to another device",
-    "hero.h1.receive": "Receive from another device",
+    "hero.h1.send": "Send to |another device",
+    "hero.h1.receive": "Receive from |another device",
+    "hero.trust.encrypt": "Encrypted in the browser",
+    "hero.trust.account": "No account needed",
+    "hero.trust.burn": "Burns after reading",
     "hero.p.send": "No sign-in, no copied links. Pick your content, connect with a one-time pairing code.",
     "hero.p.receive": "Enter the pairing code shown on the sending device. Content is decrypted only on this device.",
 
@@ -273,7 +261,7 @@ const DICT = {
 
     // ---- dropzone ----
     "drop.empty.title": "Choose a file",
-    "drop.empty.meta": "or drop it here · up to 20 MB",
+    "drop.empty.meta": "drop, click, or paste · up to 20 MB",
     "drop.filled.meta": "{size} · ready",
     "drop.change": "Choose a different file",
     "drop.tooLarge": "File must be 20 MB or smaller",
@@ -288,11 +276,9 @@ const DICT = {
     "opt.after1": "1 minute",
     "opt.after5": "5 minutes",
     "opt.after10": "10 minutes",
-    "opt.note": "Keys are negotiated by the two devices",
 
     // ---- security options ----
     "sec.heading": "Transfer settings",
-    "sec.optional": "optional",
     "sec.summary.confirm": "Security code required",
     "sec.summary.auto": "Send automatically",
     "sec.summary.internet": "Any network",
@@ -319,6 +305,11 @@ const DICT = {
     "stage.encrypt": "Encrypting on this device…",
     "stage.upload": "Sending encrypted content…",
     "err.transfer": "Transfer failed. Please start again.",
+    "err.timeout": "The request timed out — the network is too slow or the connection dropped. Please try again.",
+    "err.network": "Could not reach the server. Please check your connection and try again.",
+    "err.rate": "Too many attempts. Please wait a moment and try again.",
+    "err.expired": "This pairing code does not exist or has expired.",
+    "err.cancelled": "The transfer was cancelled.",
 
     // ---- how section ----
     "how.link": "How security works",
@@ -353,9 +344,7 @@ const DICT = {
     "discover.openSource": "View the open-source project and security notes",
 
     // ---- receive entry ----
-    "recv.eyebrow": "Enter pairing code",
     "recv.h2": "Enter the 8-digit code",
-    "recv.p": "The code is valid only for this transfer — no links, no accounts.",
     "recv.code.placeholder": "0000 0000",
     "recv.code.hint.empty": "Enter the 8 digits shown by the sender",
     "recv.code.hint.remaining": "Need {n} more",
@@ -369,9 +358,7 @@ const DICT = {
     "recv.btn.withPassphrase": "Connect and receive",
     "recv.verify.label": "Security code",
     "recv.verify.hint": "Make sure the sender shows the same security code.",
-    "recv.warn": "After pairing, the real encryption key is generated only between the two devices.",
     "recv.err.code": "Please enter the 8-digit code",
-    "recv.err.needPassphrase": "Enter the receive password set by the sender",
     "recv.err.rate": "Too many attempts. Please try again later.",
     "recv.err.notfound": "This code doesn't exist or has expired.",
     "recv.err.paired": "This transfer has already paired with another device.",
@@ -391,7 +378,9 @@ const DICT = {
     "ready.eyebrow.waiting": "Waiting for receiver",
     "ready.h1.waiting": "Enter this pairing code\non the other device",
     "ready.h1.ended": "This transfer\nhas safely ended.",
-    "ready.pair.hint": "Valid for this transfer only",
+    "ready.pair.hint": "Valid for this transfer only · click to copy",
+    "ready.pair.copy": "Copy pairing code",
+    "ready.pair.copied": "Copied",
     "ready.badge.confirm": "Security code required",
     "ready.badge.auto": "Send automatically after connection",
     "ready.badge.network": "Same network only",
@@ -436,9 +425,7 @@ export function LangProvider({ children }) {
 
   const setLang = useCallback((next) => {
     setLangState(next);
-    try {
-      localStorage.setItem(STORAGE_KEY, next);
-    } catch {}
+    writeItem(STORAGE_KEY, next);
   }, []);
 
   useEffect(() => {

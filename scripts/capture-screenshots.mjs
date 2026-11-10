@@ -37,7 +37,7 @@ async function captureLang(lang) {
   // localStorage before the page loads its scripts.
   await context.addInitScript((lang) => {
     try {
-      window.localStorage.setItem("instantflow:lang", lang);
+      window.localStorage.setItem("usend:lang", lang);
     } catch {}
   }, lang);
 
@@ -65,7 +65,7 @@ async function captureLang(lang) {
       await page.getByRole("button", { name: /传输设置/ }).click();
       await page.getByText("仅限同一网络", { exact: true }).click();
       await page.getByText("设置接收密码", { exact: true }).click();
-      await page.getByPlaceholder("至少 8 个字符").fill("instant-flow-demo");
+      await page.getByPlaceholder("至少 8 个字符").fill("usend-demo-passphrase");
       await capture("settings");
 
       await page.getByRole("button", { name: "接收", exact: true }).click();
@@ -79,7 +79,7 @@ async function captureLang(lang) {
       await page.getByRole("button", { name: /Transfer settings/ }).click();
       await page.getByText("Same network only", { exact: true }).click();
       await page.getByText("Set a receive password", { exact: true }).click();
-      await page.getByPlaceholder("At least 8 characters").fill("instant-flow-demo");
+      await page.getByPlaceholder("At least 8 characters").fill("usend-demo-passphrase");
       await capture("settings");
 
       await page.getByRole("button", { name: "Receive", exact: true }).click();

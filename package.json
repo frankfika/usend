@@ -10,10 +10,12 @@
     "test": "node --test tests/*.test.mjs",
     "test:edge": "node scripts/edge-smoke.mjs",
     "typecheck:worker": "tsc -p tsconfig.worker.json --noEmit",
+    "typecheck:ui": "tsc -p tsconfig.check.json",
     "audit:deps": "npm audit --audit-level=high --registry=https://registry.npmjs.org && npm audit --omit=dev --audit-level=moderate --registry=https://registry.npmjs.org",
     "screenshots": "node scripts/capture-screenshots.mjs",
+    "e2e:ui": "node scripts/e2e-ui.mjs",
     "deploy:dry-run": "npm run build && wrangler deploy --dry-run",
-    "check": "npm test && npm run typecheck:worker && npm run audit:deps && npm run deploy:dry-run",
+    "check": "npm test && npm run typecheck:worker && npm run typecheck:ui && npm run audit:deps && npm run deploy:dry-run",
     "deploy": "npm run check && wrangler deploy",
     "start": "node server.mjs",
     "preview": "vite preview"
@@ -30,6 +32,6 @@
     "playwright": "^1.62.1",
     "typescript": "7.0.2",
     "vite": "8.2.0",
-    "wrangler": "^4.120.0"
+    "wrangler": "^4.131.1"
   }
 }

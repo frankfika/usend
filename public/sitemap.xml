@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://usend.xyz/</loc>
+    <lastmod>2026-09-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://usend.xyz/icon-512.png</image:loc>
+      <image:title>USend</image:title>
+      <image:caption>Account-free end-to-end encrypted device-to-device transfer.</image:caption>
+    </image:image>
   </url>
 </urlset>

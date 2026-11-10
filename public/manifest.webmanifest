@@ -1,0 +1,65 @@
+{
+  "name": "USend",
+  "short_name": "USend",
+  "description": "Account-free, link-free, end-to-end encrypted temporary transfer between devices.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f5f0",
+  "theme_color": "#f7f5f0",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["productivity", "utilities", "communication"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/usend-mark-1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/docs/assets/home_en.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Send a file or text from the browser"
+    },
+    {
+      "src": "/docs/assets/features_en.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "Enter a pairing code on the receiving device"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Send",
+      "short_name": "Send",
+      "url": "/?mode=send",
+      "description": "Create a new transfer"
+    },
+    {
+      "name": "Receive",
+      "short_name": "Receive",
+      "url": "/?mode=receive",
+      "description": "Join an existing transfer"
+    }
+  ],
+  "prefer_related_applications": false
+}

@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": [],
+        "components": [
+          { "/": "/", "comment": "Reserved for future iOS app universal links" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": []
+  }
+}

@@ -5,7 +5,7 @@
 > No account. No copied link. Let information exist briefly between two devices.  
 > 不登录、不复制链接，让信息只在两台设备之间短暂存在。
 
-[![Version](https://img.shields.io/badge/version-0.1.0-315fbd?style=flat-square)](https://github.com/frankfika/usend/releases/tag/v0.1.0)
+[![Version](https://img.shields.io/badge/version-0.1.1-315fbd?style=flat-square)](https://github.com/frankfika/usend/releases/tag/v0.1.1)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-f38020?style=flat-square&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
 ![E2EE](https://img.shields.io/badge/security-E2EE-2d9d78?style=flat-square)
@@ -127,7 +127,7 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for production deployment and secret config
 
 ## 📦 Releases
 
-The current version is [v0.1.0](https://github.com/frankfika/usend/releases/tag/v0.1.0). See [GitHub Releases](https://github.com/frankfika/usend/releases) for release notes and future updates.
+The current version is [v0.1.1](https://github.com/frankfika/usend/releases/tag/v0.1.1). See [GitHub Releases](https://github.com/frankfika/usend/releases) for release notes and future updates.
 
 ## ☕ Support the project
 

@@ -1,0 +1,7 @@
+# USend security contact
+# Reports received at this address are acknowledged within 7 days.
+Contact: mailto:security@usend.xyz
+Contact: https://github.com/frankfika/usend/security/advisories/new
+Expires: 2027-12-31T23:59:59z
+Preferred-Languages: zh, en
+Canonical: https://usend.xyz/.well-known/security.txt

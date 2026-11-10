@@ -5,7 +5,7 @@
 > 不登录、不复制链接，让信息只在两台设备之间短暂存在。  
 > Account-free, link-free, end-to-end encrypted temporary transfer.
 
-[![Version](https://img.shields.io/badge/version-0.1.0-315fbd?style=flat-square)](https://github.com/frankfika/usend/releases/tag/v0.1.0)
+[![Version](https://img.shields.io/badge/version-0.1.1-315fbd?style=flat-square)](https://github.com/frankfika/usend/releases/tag/v0.1.1)
 [![React](https://img.shields.io/badge/React-19-61dafb?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-f38020?style=flat-square&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
 ![E2EE](https://img.shields.io/badge/security-E2EE-2d9d78?style=flat-square)
@@ -127,7 +127,7 @@ npm run deploy:dry-run
 
 ## 📦 版本
 
-当前版本为 [v0.1.0](https://github.com/frankfika/usend/releases/tag/v0.1.0)，更新记录与发布说明请查看 [GitHub Releases](https://github.com/frankfika/usend/releases)。
+当前版本为 [v0.1.1](https://github.com/frankfika/usend/releases/tag/v0.1.1)，更新记录与发布说明请查看 [GitHub Releases](https://github.com/frankfika/usend/releases)。
 
 ## ☕ 支持项目
 

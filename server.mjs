@@ -120,7 +120,7 @@ const securityHeaders = (res) => {
       : "'self' http://localhost:8787 http://127.0.0.1:8787";
   res.setHeader(
     "content-security-policy",
-    `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src ${connectSrc}; worker-src 'none'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; manifest-src 'self'`,
+    `default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src ${connectSrc}; worker-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'; manifest-src 'self'`,
   );
   res.setHeader("x-xss-protection", "0");
   if (process.env.NODE_ENV === "production")

@@ -17,7 +17,7 @@
 | Tagline | ≤ 60 字符 | ✅ 已备好（含字符数） |
 | Description | ≤ 260 字符 | ✅ 已备好（含字符数） |
 | First Maker Comment | 200–400 词，第一人称 | ✅ 已备好（**2 处需你改成自己的经历**） |
-| Gallery images | 5–8 张，1270×760，首图为缩略图 | ⚠️ 只有 3 张，需补拍 2–5 张 |
+| Gallery images | 5–8 张，1270×760，首图为缩略图 | ✅ 已备好 5 张 1270×760（`docs/assets/gallery/1-home.png` ～ `5-receive.png`，`npm run gallery` 重拍） |
 | Gallery video | 45–60 秒，静音可看 | ❌ 还没有 |
 | App icon | 240×240 px | ✅ `public/icon-512.png` 可缩放 |
 | Launch window | 00:01 PT，周二/周三/周四 | ✅ 建议 |
@@ -31,8 +31,8 @@
 | **Name** | USend |
 | **Website** | https://usend.xyz/ |
 | **Repository** | https://github.com/frankfika/usend |
-| **Version at launch** | v0.1.0 |
-| **License** | ⚠️ **仓库当前没有 LICENSE 文件**，`package.json` 也无 `license` 字段 → 不要在 PH 上写 "MIT" / "Open Source"，补上许可证后再说（见检查清单） |
+| **Version at launch** | v0.1.1 |
+| **License** | ✅ MIT（`LICENSE` + `package.json` 均已补上），PH 上可写 "Open Source" |
 | **Stack** | React 19 · TypeScript · Cloudflare Workers + Durable Objects |
 | **Maker** | 陈放（Frank）· github.com/frankfika |
 
@@ -190,6 +190,6 @@
 ## 10. 已知短板（诚实披露，别在 PH 上被问住）
 
 - 单文件上限 20 MB、文本上限 12,000 字 —— 大文件走不通
-- v0.1.0，只有 Web 版，没有原生客户端
+- v0.1.1，只有 Web 版，没有原生客户端
 - 接收密码与「仅同一网络」是可选加固，默认关闭
 - 端到端加密只覆盖内容，**不解决**「对面是谁」的信任问题（README 里已写明，评论区一定会问）

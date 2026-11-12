@@ -1,0 +1,6 @@
+USend — send a file or text between devices with a one-time 8-digit pairing code.
+
+No account. No share link. E2E encrypted in the browser. Deleted after delivery.
+
+Try it → https://usend.xyz
+Source → https://github.com/frankfika/usend

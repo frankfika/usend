@@ -1,0 +1,6 @@
+USend：两台设备之间传文件或文字，只需要一个 8 位配对码。
+
+不注册、不生成分享链接、浏览器端端到端加密，接收后自动销毁。
+
+在线用 → https://usend.xyz
+开源 → https://github.com/frankfika/usend
